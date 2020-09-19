@@ -5,8 +5,8 @@
         <div>
           <v-img class="logo" src="/favicon.ico"/>
         </div>
-        <h3 class="mt-4" style="color:#404040;">Twitter University</h3>
-        <div style="margin-bottom:50px;color:#404040;">A World of Genius</div>
+        <h3 class="mt-4" style="color:#404040;">ShifuTown</h3>
+        <div style="margin-bottom:50px;color:#404040;">Best Teachers on the Planet</div>
         <!-- <v-divider class="mb-6"/> -->
         <div class="menu-items text-left" v-for="item in items" :key="item.title">
           <p class="menu-item" @click="menuClicked(item)">
@@ -17,12 +17,23 @@
           </p>
 
         </div>
-        <v-btn class="mt-6" large rounded depressed color="#DBA449" dark>
-          <span>Add A Genius</span>
-        </v-btn>
+        <v-dialog
+          v-model="dialog"
+          width="500"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn class="mt-6" large rounded depressed color="#DBA449" dark 
+              v-bind="attrs"
+              v-on="on"
+            >
+              <span>Add A Shifu</span>
+            </v-btn>
+          </template>
+          <Dialog/>
+        </v-dialog>
       </v-col>
       <v-col cols="12" md="5" class="top-col">
-        <h3 class="top-panel text-left pa-6">The Gurus</h3>
+        <h3 class="top-panel text-left pa-6">The Teachers</h3>
         <Profiles v-for="person in persons" :key="person.handle" :person="person"/>
       </v-col>
       <v-col cols="4" class="top-col hidden-sm-and-down">
@@ -34,7 +45,7 @@
             <input type="text" placeholder="Enter email" class="signup" v-model="email"/>
           </div>
           <div>
-            <v-btn rounded depressed dark color="#DBA449" @click="saveEmail">Notify Me</v-btn>
+            <v-btn rounded depressed dark color="#DBA449" @click="saveEmail">Enroll Me</v-btn>
           </div>
         </div>
         <div v-else style="background:#efefef;width:80%;border-radius:30px;margin:auto;padding:3%;margin-top:40px;">
@@ -42,31 +53,35 @@
             Thanks.
           </div>
           <div>
-            We will inform you as soon as we are ready.
+            We will reach out to you soon. In the meantime, follow the Shifus ❤️
           </div>
         </div>
         <div style="position: fixed;bottom: 20px;right: 10%;">
           Made by <a target="_blank" href="https://twitter.com/kush_apoorva">@kush_apoorva</a>
         </div>
       </v-col>
+      
     </v-row>
   
 </template>
 
 <script>
   import Profiles from './Profiles'
+  import Dialog from './Dialog'
   import axios from 'axios';
   export default {
     name: 'Home',
 
     components:{
-      Profiles
+      Profiles,
+      Dialog
     },
 
     data: () => ({
       email:"",
       emailSubmitted:false,
       drawer: true,
+      // dialog:false,
       items: [
         { title: 'Home', icon: 'mdi-home-outline' },
         { title: 'But Why?', icon: 'mdi-help-circle-outline', target:'_blank', url:'https://twitter.com/AlexAndBooks_/status/1306273824762200065' },
@@ -79,9 +94,11 @@
           window.open(item.url, item.target);
         }
       },
+      
       saveEmail(){
+        if(!this.email){return}
         this.emailSubmitted = true;
-        axios.post('https://api.airtable.com/v0/appPLmEYom0tgq094/twituni',{
+        axios.post("https://api.airtable.com/v0/appPLmEYom0tgq094/twituni",{
           "records": [
             {
               "fields": {
@@ -106,9 +123,19 @@
     computed:{
       persons(){
         return this.$store.state.persons
+      },
+      dialog:{
+        get(){
+          return this.$store.state.dialog;
+        },
+        set(v){
+          this.$store.state.dialog = v;
+        }
+        
       }
     },
     mounted(){
+      // this.$store.dispatch('getShifus')
     }
   }
 </script>

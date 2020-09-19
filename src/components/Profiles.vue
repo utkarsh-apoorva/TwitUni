@@ -13,7 +13,7 @@
                         <span class="ml-2 handle">@{{person.h}}</span>
                     </div>
                     <div>{{person.l}}</div>
-                    <div class="tweet-link" @click.stop="tweetClicked()">
+                    <div class="tweet-link" @click.stop="tweetClicked()" v-if="person.t">
                         Read this awesome thread
                     </div>
                     
